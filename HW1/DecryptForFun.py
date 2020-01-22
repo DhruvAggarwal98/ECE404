@@ -42,8 +42,9 @@ for i in range(0,len(PassPhrase) // numbytes):                              #(G)
 
 # Create a bitvector from the ciphertext hex string:
 FILEIN = open(sys.argv[1])                                                  #(J)
+print(FILEIN.read())
 encrypted_bv = BitVector( hexstring = FILEIN.read() )                       #(K)
-
+#print(encrypted_bv)
 # Get key from user:
 key = None                                                          
 if sys.version_info[0] == 3:                                                #(L)
@@ -51,7 +52,6 @@ if sys.version_info[0] == 3:                                                #(L)
 else:                                                               
     key = raw_input("\nEnter key: ")                                        #(N)
 key = key.strip()                                                           #(O)
-
 # Reduce the key to a bit array of size BLOCKSIZE:
 key_bv = BitVector(bitlist = [0]*BLOCKSIZE)                                 #(P)
 for i in range(0,len(key) // numbytes):                                     #(Q)
