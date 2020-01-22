@@ -40,11 +40,11 @@ for i in range(0,len(PassPhrase) // numbytes):                              #(G)
     textstr = PassPhrase[i*numbytes:(i+1)*numbytes]                         #(H)
     bv_iv ^= BitVector( textstring = textstr )                              #(I)
 
+
 # Create a bitvector from the ciphertext hex string:
 FILEIN = open(sys.argv[1])                                                  #(J)
-print(FILEIN.read())
 encrypted_bv = BitVector( hexstring = FILEIN.read() )                       #(K)
-#print(encrypted_bv)
+
 # Get key from user:
 key = None                                                          
 if sys.version_info[0] == 3:                                                #(L)
@@ -52,6 +52,7 @@ if sys.version_info[0] == 3:                                                #(L)
 else:                                                               
     key = raw_input("\nEnter key: ")                                        #(N)
 key = key.strip()                                                           #(O)
+
 # Reduce the key to a bit array of size BLOCKSIZE:
 key_bv = BitVector(bitlist = [0]*BLOCKSIZE)                                 #(P)
 for i in range(0,len(key) // numbytes):                                     #(Q)
@@ -62,7 +63,8 @@ for i in range(0,len(key) // numbytes):                                     #(Q)
 msg_decrypted_bv = BitVector( size = 0 )                                    #(T)
 
 # Carry out differential XORing of bit blocks and decryption:
-previous_decrypted_block = bv_iv                                            #(U)
+previous_decrypted_block = bv_iv  
+print(type(previous_decrypted_block))                                          #(U)
 for i in range(0, len(encrypted_bv) // BLOCKSIZE):                          #(V)
     bv = encrypted_bv[i*BLOCKSIZE:(i+1)*BLOCKSIZE]                          #(W)
     temp = bv.deep_copy()                                                   #(X)
