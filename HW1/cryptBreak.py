@@ -10,10 +10,9 @@ def cryptBreak(ciphertextFile,key_bv):
 		textstr = PassPhrase[i*numbytes:(i+1)*numbytes]
 		bv_iv ^= BitVector( textstring = textstr ) 
 	file = open(ciphertextFile,"r")
-	en_code= file.read().strip()
-	encrypted_bv = BitVector( hexstring = en_code)
+	encrypted_bv = BitVector( hexstring = file.read().strip())
 	
-	for key in range(25000,26000):
+	for key in range(65536):
 		key_bv = BitVector(intVal = key,size = 16)
 		msg_decrypted_bv = BitVector (size = 0)
 		previous_decrypted_block = bv_iv
@@ -28,8 +27,7 @@ def cryptBreak(ciphertextFile,key_bv):
 			return str(msg_decrypted_bv.get_text_from_bitvector())
 
 	
-
 if __name__ == '__main__':
 
-	final = cryptBreak("/Users/DhruvMac/Documents/College/GitHub/ECE404/HW1/cipher.txt",2)
+	final= cryptBreak("/Users/DhruvMac/Documents/College/GitHub/ECE404/HW1/cipher.txt",224)
 	print(final)
