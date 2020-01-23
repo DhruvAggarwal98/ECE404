@@ -26,7 +26,6 @@ def cryptBreak(ciphertextFile,key_bv):
 		if 'Mark Twain' in msg_decrypted_bv.get_text_from_bitvector():
 			return str(msg_decrypted_bv.get_text_from_bitvector())
 
-	
 if __name__ == '__main__':
 
 	final= cryptBreak("/Users/DhruvMac/Documents/College/GitHub/ECE404/HW1/cipher.txt",224)
