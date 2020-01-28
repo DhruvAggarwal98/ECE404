@@ -88,38 +88,20 @@ def encrypt(message,key):
     while (bv.more_to_read):
         bitvec = bv.read_bits_from_file( 64 )
         if bitvec.getsize() > 0:
+           #check if its less than 64
+           #if it is then pad right side
             [LE, RE] = bitvec.divide_into_two()
+            #start for loop to go through round keys
             newRE = RE.permute( expansion_permutation )
             out_xor = newRE.bv_xor( round_key )
-
-            # '''
-            # now comes the hard part --- the substition boxes
-
-            # Let's say after the substitution boxes and another
-            # permutation (P in Section 3.3.4), the output for RE is
-            # RE_modified.
-
-            # When you join the two halves of the bit string
-            # again, the rule to follow (from Fig. 4 in page 21) is
-            # either
-
-            # final_string = RE followed by (RE_modified xored with LE)
-
-            # or
-
-            # final_string = LE followed by (LE_modified xored with RE)
-
-            # depending upon whether you prefer to do the substitutions
-            # in the right half (as shown in Fig. 4) or in the left
-            # half.
-
-            # The important thing to note is that the swap between the
-            # two halves shown in Fig. 4 is essential to the working
-            # of the algorithm even in a single-round implementation
-            # of the cipher, especially if you want to use the same
-            # algorithm for both encryption and decryption (see Fig.
-            # 3 page 15). The two rules shown above include this swap.
-            # '''
+            #subsituite with s boxes
+            #permute again with permutation box
+            #set RE to LE xor with new re 
+            #LE to new old RE
+            # combine RE and LE
+            #write to file
+           
+           
 if sys.argv[1] == "-e":
     message = open(sys.argv[2],"r")  
     key = open(sys.argv[3],"r")
