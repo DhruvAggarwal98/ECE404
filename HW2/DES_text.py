@@ -16,6 +16,8 @@ key_permutation_2 = [13,16,10,23,0,4,2,27,14,5,20,9,22,18,11,
                      54,29,39,50,44,32,47,43,48,38,55,33,52,
                      45,41,49,35,28,31]
 
+permutation_box = [15, 6, 19, 20, 28, 11, 27, 16, 0, 14, 22, 25, 4, 17, 30, 9, 1, 7, 23, 13, 31, 26, 2, 8, 18, 12, 29, 5, 21, 10, 3, 24]
+
 shifts_for_round_key_gen = [1,1,2,2,2,2,2,2,1,2,2,2,2,2,2,1]
 
 s_boxes = {i:None for i in range(8)}
@@ -72,6 +74,7 @@ def generate_round_keys(encryption_key):
         round_key = key.permute(key_permutation_2)
         round_keys.append(round_key)
     return round_keys
+   
 
 def substitute( expanded_half_block ):
     output = BitVector (size = 32)
@@ -82,42 +85,61 @@ def substitute( expanded_half_block ):
         output[sindex*4:sindex*4+4] = BitVector(intVal = s_boxes[sindex][row][column], size = 4)
     return output        
 
-def encrypt(message,key):
-    round_keys = generate_round_keys(key)
-    bv = BitVector(message)
+def encrypt(message,key,output):
+    file_in = open(key,"r")
+    key1 = BitVector(textstring = file_in.read())
+    key1 = key1.permute(key_permutation_1)
+    round_keys = generate_round_keys(key1)
+    bv = BitVector(filename = message)
+    output1 = open(output,"wb")
     while (bv.more_to_read):
         bitvec = bv.read_bits_from_file( 64 )
-        if bitvec.getsize() > 0:
-           #check if its less than 64
-           #if it is then pad right side
+        if bitvec.length() > 0:
+            if bitvec.length() < 64:
+                bitvec = bitvec.pad_from_right(64-bitvec.length())            
             [LE, RE] = bitvec.divide_into_two()
-            #start for loop to go through round keys
-            newRE = RE.permute( expansion_permutation )
-            out_xor = newRE.bv_xor( round_key )
-            #subsituite with s boxes
-            #permute again with permutation box
-            #set RE to LE xor with new re 
-            #LE to new old RE
-            # combine RE and LE
-            #write to file
-           
-           
-if sys.argv[1] == "-e":
-    message = open(sys.argv[2],"r")  
-    key = open(sys.argv[3],"r")
-    message = BitVector( textstring = message.read().strip())
-    #key = BitVector( textstring = key.read().strip())
-    key = BitVector(textstring = key.read())
-    key = key.permute(key_permutation_1)
-    print(key)
-    encrypt(message,key)
-elif sys.argv[1]== "-d":
-    message = open(sys.argv[2])
-    key = open(sys.argv[3])
-    decrypt(message,key)
+            for round_key in round_keys:
+                newRE = RE.permute( expansion_permutation )
+                out_xor = newRE^( round_key )
+                re_mod = substitute(out_xor)
+                re_mod = re_mod.permute(permutation_box)
+                temp = RE
+                RE = LE ^ re_mod
+                LE = temp
+            final_string = RE + LE
+            final_string.write_to_file(output1)
 
-def decrypt(message,key):
-    pass
+def decrypt(message,key,output):
+    file_in = open(key)
+    key1 = BitVector(textstring = file_in.read())
+    key1 = key1.permute(key_permutation_1)
+    round_keys = generate_round_keys(key1)
+    round_keys = round_keys[::-1]
+    bv = BitVector(filename = message)
+    output1 = open(output,"wb")
+    while (bv.more_to_read):
+        bitvec = bv.read_bits_from_file( 64 )
+        if bitvec.length() > 0:
+            if bitvec.length() < 64:
+                bitvec = bitvec.pad_from_right(64-bitvec.length())            
+            [LE, RE] = bitvec.divide_into_two()
+            for round_key in round_keys:
+                newRE = RE.permute( expansion_permutation )
+                out_xor = newRE^( round_key )
+                re_mod = substitute(out_xor)
+                re_mod = re_mod.permute(permutation_box)
+                temp = RE
+                RE = LE ^ re_mod
+                LE = temp
+            final_string = RE + LE
+            final_string.write_to_file(output1)
+
+if sys.argv[1] == "-e":
+    encrypt(sys.argv[2],sys.argv[3],sys.argv[4])
+
+elif sys.argv[1]== "-d":
+    decrypt(sys.argv[2],sys.argv[3],sys.argv[4])
+    
 
 if __name__ == '__main__':
     pass
