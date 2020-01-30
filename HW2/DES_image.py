@@ -117,8 +117,8 @@ def encrypt(message,key,output):
             final_string = RE + LE
             final_string.write_to_file(final_output)
 
-if sys.argv[1] == "-e":
-    encrypt(sys.argv[2],sys.argv[3],sys.argv[4])    
+
+encrypt(sys.argv[1],sys.argv[2],sys.argv[3])    
 
 if __name__ == '__main__':
     pass
