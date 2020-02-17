@@ -104,6 +104,11 @@ def sub_bytes(array):
             array[each][each2]= hex(new_table[int(array[each][each2],0)])
     return array
 
+def shift_rows(array):
+    for each in range(1,4):
+        array[each] = array[each][each:] + array[each][:each]
+    return array
+
 
 def encrypt(message,key,output):
     file_in = open(key,"r")
@@ -123,9 +128,10 @@ def encrypt(message,key,output):
                 for j in range(4):
                     state_array[j][i]=bitvec[32*i+8*j:32*i+8*(j+1)]
             # for each_round in range(0,13):
-            #     state_array = next_array
-            #     state_array=sub_bytes(state_array)
-            #     print(state_array)
+                # state_array = next_array
+                # state_array=sub_bytes(state_array)
+                # state_array =shift_rows(state_array)
+                # print(state_array)
 
 
 if sys.argv[1] == "-e":
