@@ -96,7 +96,15 @@ def genTables():
         check = b.gf_MI(AES_modulus, 8)
         b = check if isinstance(check, BitVector) else 0
         invSubBytesTable.append(int(b))
-  
+
+def sub_bytes(array):
+    new_table = hex(gen_subbytes_table())
+    for each in range(0,3):
+        for each2 in range(0,3):
+            array[each][each2]= hex(new_table[int(array[each][each2],0)])
+    return array
+
+
 def encrypt(message,key,output):
     file_in = open(key,"r")
     output1 = open(output,"wb")
@@ -104,14 +112,21 @@ def encrypt(message,key,output):
     key_bv = BitVector(textstring = file_in.read())
     state_array = [[0 for i in range(4)] for i in range(4)]
     next_array  = [[0 for i in range(4)] for i in range(4)]
-    round_key = gen_round_keys(key_bv)
+    round_key = gen_round_keys(key_bv)    
     while (bv.more_to_read):
         bitvec = bv.read_bits_from_file( 128 )
         if bitvec.length() > 0:
             if bitvec.length() < 128:
-                bitvec = bitvec.pad_from_right(128-bitvec.length())    
+                bitvec.pad_from_right(128-bitvec.length())  
             bitvec ^= round_key[0]
             for i in range(4):
                 for j in range(4):
                     state_array[j][i]=bitvec[32*i+8*j:32*i+8*(j+1)]
-                    
+            # for each_round in range(0,13):
+            #     state_array = next_array
+            #     state_array=sub_bytes(state_array)
+            #     print(state_array)
+
+
+if sys.argv[1] == "-e":
+    encrypt(sys.argv[2],sys.argv[3],sys.argv[4])
