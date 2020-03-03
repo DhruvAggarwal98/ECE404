@@ -19,6 +19,9 @@ def gcd(a,b):
 def coprime(a,b):
     return gcd(a,b) == 1
 
+def calculation(x):
+    return BitVector(intVal= int(x))
+
 def generate():
     number = PrimeGenerator(bits = 128,debug = 0)
     flag = False
@@ -100,19 +103,19 @@ def calculate_cracked():
     n1 = n1.strip()
     n2 = n2.strip()
     n3 = n3.strip()
-    n1_bv = BitVector(intVal= int(n1))
-    n2_bv = BitVector(intVal = int(n2))
-    n3_bv = BitVector(intVal= int(n3))
+    n1_bv = calculation(n1)
+    n2_bv = calculation(n2)
+    n3_bv = calculation(n3)
+    
     mod = int(n1)*int(n2)*int(n3)
     final_n1 = mod / int(n1)
     final_n2 = mod / int(n2)
     final_n3 = mod / int(n3)
     
-    final_n1_bv = BitVector(intVal = int(final_n1))
-    final_n2_bv = BitVector(intVal = int(final_n2))
-    final_n3_bv = BitVector(intVal = int(final_n3))
-    # print(final_n1_bv,final_n2_bv,final_n3_bv)
-
+    final_n1_bv = calculation(final_n1)
+    final_n2_bv = calculation(final_n2)
+    final_n3_bv = calculation(final_n3)
+    
     d1 = int(final_n1_bv.multiplicative_inverse(n1_bv))
     d2 = int(final_n2_bv.multiplicative_inverse(n2_bv))
     d3 = int(final_n3_bv.multiplicative_inverse(n3_bv))
@@ -126,7 +129,6 @@ def calculate_cracked():
         c3 = read_bits(input_bv3)
 
         crt = ((c1*final_n1*d1)+(c2*final_n2*d2)+(c3*final_n3*d3))
-        print(crt)
         cube = solve_pRoot(3,crt)
         plaintext_bv = convert_text(cube)
         f2.write(plaintext_bv.get_bitvector_in_ascii())
