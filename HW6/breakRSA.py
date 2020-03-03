@@ -6,7 +6,7 @@ import sys
 from BitVector import* 
 from PrimeGenerator import*
 import numpy as np
-
+from solve_pRoot import *
 
 e = 3
 
@@ -85,3 +85,52 @@ if sys.argv[1] == "-e":
     encrypt(sys.argv[2],n1,sys.argv[3])
     encrypt(sys.argv[2],n2,sys.argv[4])
     encrypt(sys.argv[2],n3,sys.argv[5])
+
+def read_bits(x):
+    return x.read_bits_from_file(256).int_val()
+def convert_text(x):
+    return BitVector(intVal = x,size=256)
+def calculate_cracked():
+    f1 = open(sys.argv[5],"r")
+    f2 = open(sys.argv[6],"w+")
+    all_n = f1.readlines()
+    n1 = all_n[0]
+    n2 = all_n[1]
+    n3 = all_n[2]
+    n1 = n1.strip()
+    n2 = n2.strip()
+    n3 = n3.strip()
+    n1_bv = BitVector(intVal= int(n1))
+    n2_bv = BitVector(intVal = int(n2))
+    n3_bv = BitVector(intVal= int(n3))
+    mod = int(n1)*int(n2)*int(n3)
+    final_n1 = mod / int(n1)
+    final_n2 = mod / int(n2)
+    final_n3 = mod / int(n3)
+    
+    final_n1_bv = BitVector(intVal = int(final_n1))
+    final_n2_bv = BitVector(intVal = int(final_n2))
+    final_n3_bv = BitVector(intVal = int(final_n3))
+    # print(final_n1_bv,final_n2_bv,final_n3_bv)
+
+    d1 = int(final_n1_bv.multiplicative_inverse(n1_bv))
+    d2 = int(final_n2_bv.multiplicative_inverse(n2_bv))
+    d3 = int(final_n3_bv.multiplicative_inverse(n3_bv))
+    # print(d1,d2,d3)
+    input_bv1 = BitVector(filename = sys.argv[2])
+    input_bv2 = BitVector(filename = sys.argv[3])
+    input_bv3 = BitVector(filename = sys.argv[4])
+    while input_bv1.more_to_read and input_bv2.more_to_read and input_bv3.more_to_read:
+        c1 = read_bits(input_bv1)
+        c2 = read_bits(input_bv2)
+        c3 = read_bits(input_bv3)
+
+        crt = ((c1*final_n1*d1)+(c2*final_n2*d2)+(c3*final_n3*d3))
+        print(crt)
+        cube = solve_pRoot(3,crt)
+        plaintext_bv = convert_text(cube)
+        f2.write(plaintext_bv.get_bitvector_in_ascii())
+
+
+if sys.argv[1] == "-c":
+    calculate_cracked()
