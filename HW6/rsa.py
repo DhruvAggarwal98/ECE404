@@ -21,9 +21,9 @@ def coprime(a,b):
 def private_key_gen(totient_bv):
     p_key_bv = e_bv.multiplicative_inverse(totient_bv)
     return int(p_key_bv)
-def encrypt(mod):
-    input_bv = BitVector(filename = sys.argv[2])
-    final_output = open(sys.argv[5],"w")
+def encrypt(input,mod,output):
+    input_bv = BitVector(filename = input)
+    final_output = open(output,"w")
     
     #read 128 bits from the file
     #if its less than 128 than pad the block 
@@ -98,6 +98,7 @@ def generate():
         else:
             flag = False
     return p,q
+
 if sys.argv[1] == "-g":
     p,q = generate()
     with open(sys.argv[2], 'w+') as f:
@@ -111,7 +112,7 @@ if sys.argv[1] == "-e":
     p = int(f1.read())
     q = int(f2.read())
     mod = p * q
-    encrypt(mod)
+    encrypt(sys.argv[2],mod,sys.argv[5])
 
 if sys.argv[1] == "-d":
     f1 = open(sys.argv[3],"r")
