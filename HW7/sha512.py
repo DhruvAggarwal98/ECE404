@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 #HW7
 #Dhruv Aggarwal
 #aggarw45 
