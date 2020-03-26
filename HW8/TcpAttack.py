@@ -59,6 +59,6 @@ if __name__ == "__main__":
     tcp = TcpAttack(spoof,target)
     tcp.scanTarget(start,end)
     if (tcp.attackTarget(port, 10)):
-        print ('port was able to be attacked')
+        print ('port was open to be attacked')
     else:
-        print ('port not able to be attacked')
+        print ('port not open to be attacked')
