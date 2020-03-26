@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 #HW8
 #Dhruv Aggarwal
 #aggarw45
