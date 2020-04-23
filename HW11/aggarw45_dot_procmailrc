@@ -1,0 +1,52 @@
+SHELL=/bin/sh
+PATH=/usr/local/lib/mh:$PATH
+MAILDIR=$HOME/Mail
+LOGFILE=$HOME/Mail/logfile
+SENDMAIL=/usr/sbin/sendmail
+#VERBOSE=1
+VERBOSE=0
+EOL="
+"
+LOG="$EOL$EOL$EOL"
+LOG="New message log:$EOL"
+LOG=`perl GET_MESSAGE_INDEX`
+LOG="$EOL"
+
+
+
+## Recipe_1-50: 
+##
+:0 :
+*^From.*(<[^\s]+@[^\s]+\.[^\s]+>,)+
+junk1Folder
+
+
+## Recipe_51-63: 
+##
+:0 H
+*^Subject.*(safe|diploma|career|graduate|measures|free|wall|mock|watches|countries|fast|single|Partner
+junk2Folder
+
+## Recipe_64-66: 
+##
+:0 B
+* (steady|Poker|imagination)
+junk3Folder
+
+## Recipe_67-75: 
+##
+:0 HB
+* Content-Type: multipart/alternative
+* !^Content-Transfer-Encoding: base64
+junk4Folder
+
+
+## Recipe_default:
+## 
+## The rest of the email to your special account will be 
+## deposited in the file spamFolder
+##
+:0 :
+spamFolder
+
+
