@@ -26,19 +26,19 @@ junk1Folder
 
 ## Recipe_51-63: 
 ##
-:0 H
+:0 H:
 *^Subject.*(safe|diploma|career|graduate|measures|free|wall|mock|watches|countries|fast|single|Partner)
 junk2Folder
 
 ## Recipe_64-66: 
 ##
-:0 B
+:0 B:
 * (steady|Poker|imagination)
 junk3Folder
 
 ## Recipe_67-75: 
 ##
-:0 HB
+:0 HB:
 * Content-Type: multipart/alternative
 * !^Content-Transfer-Encoding: base64
 junk4Folder
